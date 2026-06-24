@@ -167,6 +167,22 @@ const QuickPointage = ({ inLayout = false }) => {
     };
   };
 
+  const getHeaderStyle = () => {
+    if (siteData?.imageUrl) {
+      const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:5001/api';
+      const baseUrl = apiUrl.replace('/api', '');
+      const imageUrl = `${baseUrl}/uploads/sites/${siteData.imageUrl}`;
+      return {
+        ...styles.header,
+        background: `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.6)), url(${imageUrl})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat'
+      };
+    }
+    return styles.header;
+  };
+
   const styles = {
     container: isInLayout ? {
       display: 'flex',
@@ -233,7 +249,7 @@ const QuickPointage = ({ inLayout = false }) => {
     if (currentStep === 'login') {
       return (
         <>
-          <div style={styles.header}>
+          <div style={getHeaderStyle()}>
             <div style={styles.siteIcon}>🔐</div>
             <Title level={3} style={{ color: 'white', margin: 0 }}>Connexion requise</Title>
           </div>
@@ -278,7 +294,7 @@ const QuickPointage = ({ inLayout = false }) => {
     if (currentStep === 'processing') {
       return (
         <>
-          <div style={styles.header}>
+          <div style={getHeaderStyle()}>
             <div style={styles.siteIcon}>⏳</div>
             <Title level={3} style={{ color: 'white', margin: 0 }}>Traitement</Title>
           </div>
@@ -294,7 +310,7 @@ const QuickPointage = ({ inLayout = false }) => {
 
     return (
       <>
-        <div style={styles.header}>
+        <div style={getHeaderStyle()}>
           <div style={styles.siteIcon}>📍</div>
           <Title level={3} style={{ color: 'white', margin: 0, wordBreak: 'break-word', fontSize: '18px' }}>
             {siteInfo?.nom || siteNom || 'Site'}
