@@ -19,3 +19,16 @@
 ### 5. Modification des Enumérations Prisma (Enum)
 - Lorsqu'on modifie un type d'énumération (ajout de `PAUSE` et `REPRISE`), toute la chaîne Full-Stack est impactée.
 - Il ne faut pas seulement appliquer la migration en base de données, mais il faut aussi auditer et mettre à jour tous les points du frontend (formulaires, rendus de listes, badges, boutons) qui étaient limités aux anciennes valeurs (`ARRIVEE` / `DEPART`).
+
+### 6. Configuration d'Axios et Envoi de FormData (Fichiers/Images)
+- **Problème :** Définir globalement l'en-tête `'Content-Type': 'application/json'` dans la configuration d'une instance Axios (`axios.create`) force l'envoi de toutes les requêtes en JSON. Cela écrase l'analyse automatique des objets `FormData` par le navigateur et empêche le bon envoi d'images ou de fichiers (qui nécessitent `multipart/form-data` avec une clé de séparation *boundary*). Le backend reçoit alors un fichier `undefined`.
+- **Solution :** Ne pas spécifier d'en-tête `Content-Type` par défaut dans Axios. Laisser Axios et le navigateur configurer dynamiquement l'en-tête selon le type d'objet envoyé (JSON, FormData, etc.).
+
+### 7. Optimisation des builds en production pour petits VPS
+- Lancer le build de production d'un frontend React (`npm run build`) sur un serveur VPS à faibles ressources (ex: 1GB de RAM) peut faire planter la compilation ou saturer complètement le processeur.
+- **Bonne pratique :** Compiler le build de production localement sur la machine de développement (Mac), puis synchroniser uniquement le dossier compilé (`build/` ou `dist/`) vers le serveur VPS via `rsync` ou `scp`. Cela économise la RAM et le CPU du VPS de production.
+
+### 8. Simplification de l'interface utilisateur (UI) et gain de performance
+- Le fait de retirer une fonctionnalité lourde ou inutilisée (comme la détection de QR Code par flux vidéo temps réel) permet d'alléger considérablement le bundle de production de l'application (le bundle JS a été réduit de près de 50 Ko en supprimant la bibliothèque de décodage `jsQR`).
+- Intégrer directement les formulaires et listes déroulantes sur la carte principale plutôt que d'utiliser des fenêtres modales superflues fluidifie considérablement l'expérience utilisateur sur mobile (moins d'étapes de clics).
+
