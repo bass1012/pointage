@@ -1,0 +1,35 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 30
+    },
+    "auditLog": "/var/www/pointage/backend/logs/.113fd85a6069acde806536273f3e162df05dd4f3-audit.json",
+    "files": [
+        {
+            "date": 1772812981367,
+            "name": "/var/www/pointage/backend/logs/error-2026-03-06.log",
+            "hash": "e306915bc919b6196c51b23b40c3d0ac32c256b02609c329ae06c1c86b0b20b9"
+        },
+        {
+            "date": 1773143337843,
+            "name": "/var/www/pointage/backend/logs/error-2026-03-10.log",
+            "hash": "9e84d0e7889251a910910ae7c423aba5a805c27c15768474ef2024c31fa079fa"
+        },
+        {
+            "date": 1773399756205,
+            "name": "/var/www/pointage/backend/logs/error-2026-03-13.log",
+            "hash": "ab4ed147b827a7d5576b0183c179cd3ec6b178a8ee4874b9f7f3c06db3653a72"
+        },
+        {
+            "date": 1773950489364,
+            "name": "/var/www/pointage/backend/logs/error-2026-03-19.log",
+            "hash": "84e745fd8a3fc41f998b9240e83e58bd1bb3805a5928d9bc20561121f1ed1036"
+        },
+        {
+            "date": 1774530688377,
+            "name": "/var/www/pointage/backend/logs/error-2026-03-26.log",
+            "hash": "75ae96a882c94a59ccaa3b2f42c5a6a8fc4740070fb78a26b886948f2bb1f01b"
+        }
+    ],
+    "hashType": "sha256"
+}

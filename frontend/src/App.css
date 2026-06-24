@@ -1,0 +1,110 @@
+/* Styles globaux et responsive */
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* Responsive utilities */
+@media (max-width: 768px) {
+  .ant-layout-sider {
+    display: none !important;
+  }
+  
+  .ant-layout-content {
+    padding: 8px !important;
+  }
+  
+  .ant-card {
+    margin-bottom: 12px !important;
+  }
+  
+  .ant-table {
+    font-size: 12px;
+  }
+  
+  .ant-btn-lg {
+    height: 48px !important;
+    font-size: 16px !important;
+  }
+  
+  .ant-modal {
+    max-width: calc(100vw - 32px) !important;
+    margin: 16px !important;
+  }
+  
+  .ant-modal-content {
+    border-radius: 16px !important;
+  }
+}
+
+/* Mobile-first helpers */
+.mobile-padding {
+  padding: 12px;
+}
+
+@media (min-width: 768px) {
+  .mobile-padding {
+    padding: 24px;
+  }
+}
+
+/* Touch-friendly buttons */
+.touch-btn {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+/* Safe area for mobile */
+.safe-area {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* Smooth transitions */
+.ant-btn,
+.ant-card,
+.ant-input {
+  transition: all 0.2s ease;
+}
+
+/* Better focus states for mobile */
+.ant-input:focus,
+.ant-select-focused .ant-select-selector {
+  box-shadow: 0 0 0 3px rgba(24, 144, 255, 0.2) !important;
+}
+
+/* Card hover effects */
+.ant-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a1a1a1;
+}

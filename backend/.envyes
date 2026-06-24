@@ -1,0 +1,6 @@
+
+JWT_SECRET="132ba8056638cc049a7f783880abfb66b0a7d479295d09064c1fa2da7bac9abf"
+PORT=5000
+NODE_ENV=production
+QR_SECRET_KEY="b08e285fc38cb914aee43ae3e381e5dcbd6eab3d2cf5f3c3b82d6e8256802894"
+DATABASE_URL="postgresql://mct_pointage:#Keep0ut@2026!@localhost:5432/pointage_bd"

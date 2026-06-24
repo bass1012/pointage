@@ -1,0 +1,25 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 14
+    },
+    "auditLog": "/var/www/pointage/backend/logs/.1e1c8fa6f150271ba6759ba00f3f962cc1591f5a-audit.json",
+    "files": [
+        {
+            "date": 1773950489365,
+            "name": "/var/www/pointage/backend/logs/combined-2026-03-19.log",
+            "hash": "747f78c41688848aa209981e0b28abbf7bbc4da6211e186832d257e5e391d01f"
+        },
+        {
+            "date": 1774530688380,
+            "name": "/var/www/pointage/backend/logs/combined-2026-03-26.log",
+            "hash": "deb47759a54364d483e48648fc49d0c1c7ec2d02554b3e68ed9f20dc0e328644"
+        },
+        {
+            "date": 1774892021503,
+            "name": "/var/www/pointage/backend/logs/combined-2026-03-30.log",
+            "hash": "9d056ea36e68f9d4c807d541987e1cc01c816cecf561ee9f9004a511d68009c3"
+        }
+    ],
+    "hashType": "sha256"
+}

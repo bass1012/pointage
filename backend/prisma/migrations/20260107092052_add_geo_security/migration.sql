@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "Site" ADD COLUMN     "geoRequired" BOOLEAN NOT NULL DEFAULT true,
+ADD COLUMN     "rayonMetres" INTEGER NOT NULL DEFAULT 100;
