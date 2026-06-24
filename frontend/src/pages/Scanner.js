@@ -7,7 +7,6 @@ import { pointageService, authService, siteService } from '../services';
 const { Title, Text } = Typography;
 
 const Scanner = () => {
-  const [scanning, setScanning] = useState(false);
   const [type, setType] = useState('ARRIVEE');
   const [result, setResult] = useState(null);
   const [processing, setProcessing] = useState(false);
@@ -17,23 +16,12 @@ const Scanner = () => {
   const [successModalVisible, setSuccessModalVisible] = useState(false);
   const [successModalData, setSuccessModalData] = useState(null);
   
-  const isHttpNotLocalhost = window.location.protocol === 'http:' && 
-                             !window.location.hostname.includes('localhost') &&
-                             !window.location.hostname.includes('127.0.0.1');
-  const [scanMode, setScanMode] = useState(isHttpNotLocalhost ? 'upload' : 'camera');
-  const [cameraError, setCameraError] = useState(null);
-  
-  const videoRef = useRef(null);
-  const canvasRef = useRef(null);
-  const streamRef = useRef(null);
-  const animationFrameRef = useRef(null);
   const fileInputRef = useRef(null);
 
   const user = authService.getCurrentUser();
 
   useEffect(() => {
     loadSites();
-    return () => stopCamera();
   }, []);
 
   const loadSites = async () => {
@@ -45,21 +33,10 @@ const Scanner = () => {
     }
   };
 
-  const stopCamera = () => {
-    if (animationFrameRef.current) {
-      cancelAnimationFrame(animationFrameRef.current);
-      animationFrameRef.current = null;
-    }
-    if (streamRef.current) {
-      streamRef.current.getTracks().forEach(track => track.stop());
-      streamRef.current = null;
-    }
-  };
+
 
   const handleScanSuccess = async (decodedText) => {
     try {
-      stopCamera();
-      setScanning(false);
       setProcessing(true);
 
       let qrData;
@@ -137,66 +114,7 @@ const Scanner = () => {
     }
   };
 
-  const startCamera = async () => {
-    setResult(null);
-    setCameraError(null);
-    setScanning(true);
 
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ 
-        video: { facingMode: "environment", width: { ideal: 1280 }, height: { ideal: 720 } }
-      });
-      
-      streamRef.current = stream;
-      
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-        videoRef.current.setAttribute('playsinline', 'true');
-        await videoRef.current.play();
-        requestAnimationFrame(scanFrame);
-      }
-    } catch (error) {
-      let errorMsg = 'Impossible d\'accéder à la caméra.';
-      if (error.name === 'NotAllowedError') errorMsg = 'Accès caméra refusé.';
-      else if (error.name === 'NotFoundError') errorMsg = 'Aucune caméra trouvée.';
-      else if (error.name === 'SecurityError') errorMsg = 'HTTPS requis pour la caméra.';
-      
-      setCameraError(errorMsg);
-      setScanning(false);
-      setScanMode('upload');
-    }
-  };
-
-  const scanFrame = () => {
-    if (!videoRef.current || !canvasRef.current || !streamRef.current) return;
-    
-    const video = videoRef.current;
-    const canvas = canvasRef.current;
-    const ctx = canvas.getContext('2d');
-    
-    if (video.readyState === video.HAVE_ENOUGH_DATA) {
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
-      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-      
-      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-      const code = jsQR(imageData.data, imageData.width, imageData.height, {
-        inversionAttempts: "dontInvert"
-      });
-      
-      if (code) {
-        handleScanSuccess(code.data);
-        return;
-      }
-    }
-    
-    animationFrameRef.current = requestAnimationFrame(scanFrame);
-  };
-
-  const cancelScanning = () => {
-    stopCamera();
-    setScanning(false);
-  };
 
   const tryMultipleScanConfigs = (img) => {
     const configs = [
@@ -387,27 +305,7 @@ const Scanner = () => {
       borderRadius: '12px',
       fontSize: '15px'
     },
-    videoContainer: {
-      position: 'relative',
-      width: '100%',
-      maxWidth: '400px',
-      margin: '0 auto 16px',
-      borderRadius: '16px',
-      overflow: 'hidden',
-      backgroundColor: '#000',
-      aspectRatio: '1'
-    },
-    scanOverlay: {
-      position: 'absolute',
-      top: '50%',
-      left: '50%',
-      transform: 'translate(-50%, -50%)',
-      width: '70%',
-      height: '70%',
-      border: '3px solid #1890ff',
-      borderRadius: '16px',
-      boxShadow: '0 0 0 9999px rgba(0,0,0,0.5)'
-    },
+
     userCard: {
       borderRadius: '12px',
       background: 'linear-gradient(135deg, #081BCC 0%, #0615A1 100%)',
@@ -417,7 +315,7 @@ const Scanner = () => {
 
   return (
     <div style={styles.container}>
-      <canvas ref={canvasRef} style={{ display: 'none' }} />
+
       <input
         type="file"
         ref={fileInputRef}
@@ -463,114 +361,33 @@ const Scanner = () => {
           </Radio.Group>
         </div>
 
-        {/* Mode de scan (seulement si pas de résultat) */}
+        {/* Formulaire de Pointage (seulement si pas de résultat) */}
         {!result && (
-          <>
-            <div style={{ marginBottom: '20px' }}>
-              <Text strong style={{ display: 'block', marginBottom: '12px', fontSize: '15px', color: '#666' }}>
-                Mode de scan
-              </Text>
-              <Radio.Group 
-                value={scanMode} 
-                onChange={(e) => {
-                  setScanMode(e.target.value);
-                  setCameraError(null);
-                  cancelScanning();
-                }}
-                size="large"
-                style={styles.radioGroup}
-              >
-                <Radio.Button value="camera" style={{ borderRadius: '10px 0 0 10px' }}>
-                  <CameraOutlined /> Caméra
-                </Radio.Button>
-                <Radio.Button value="upload" style={{ borderRadius: '0 10px 10px 0' }}>
-                  <UploadOutlined /> Photo
-                </Radio.Button>
-              </Radio.Group>
+          <Space direction="vertical" style={{ width: '100%' }} size="middle">
+            <Button
+              type="primary"
+              icon={processing ? <Spin size="small" /> : <CameraOutlined />}
+              onClick={() => fileInputRef.current?.click()}
+              block
+              disabled={processing}
+              style={styles.mainButton}
+            >
+              {processing ? 'Analyse...' : '📷 Prendre une photo'}
+            </Button>
+
+            <div style={{ textAlign: 'center', color: '#999', fontSize: '13px' }}>
+              — ou —
             </div>
 
-            {/* Alertes */}
-            {cameraError && scanMode === 'camera' && (
-              <Alert
-                message={cameraError}
-                type="warning"
-                showIcon
-                style={{ marginBottom: '16px', borderRadius: '10px' }}
-              />
-            )}
-
-            {isHttpNotLocalhost && scanMode === 'camera' && !cameraError && (
-              <Alert
-                message="Caméra non disponible en HTTP"
-                description="Utilisez le mode Photo"
-                type="info"
-                showIcon
-                style={{ marginBottom: '16px', borderRadius: '10px' }}
-              />
-            )}
-
-            {/* Mode Caméra */}
-            {scanMode === 'camera' && (
-              <>
-                {!scanning ? (
-                  <Button
-                    type="primary"
-                    icon={<CameraOutlined />}
-                    onClick={startCamera}
-                    block
-                    disabled={processing}
-                    style={styles.mainButton}
-                  >
-                    Démarrer la caméra
-                  </Button>
-                ) : (
-                  <div>
-                    <div style={styles.videoContainer}>
-                      <video 
-                        ref={videoRef}
-                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                        playsInline
-                        muted
-                      />
-                      <div style={styles.scanOverlay} />
-                    </div>
-                    <Button danger onClick={cancelScanning} block style={styles.secondaryButton}>
-                      Arrêter
-                    </Button>
-                  </div>
-                )}
-              </>
-            )}
-
-            {/* Mode Upload */}
-            {scanMode === 'upload' && (
-              <Space direction="vertical" style={{ width: '100%' }} size="middle">
-                <Button
-                  type="primary"
-                  icon={processing ? <Spin size="small" /> : <CameraOutlined />}
-                  onClick={() => fileInputRef.current?.click()}
-                  block
-                  disabled={processing}
-                  style={styles.mainButton}
-                >
-                  {processing ? 'Analyse...' : '📷 Prendre une photo'}
-                </Button>
-
-                <div style={{ textAlign: 'center', color: '#999', fontSize: '13px' }}>
-                  — ou —
-                </div>
-
-                <Button
-                  icon={<EnvironmentOutlined />}
-                  onClick={() => setShowManualModal(true)}
-                  block
-                  style={styles.secondaryButton}
-                >
-                  📍 Sélectionner le site
-                </Button>
-              </Space>
-            )}
-          </>
+            <Button
+              icon={<EnvironmentOutlined />}
+              onClick={() => setShowManualModal(true)}
+              block
+              style={styles.secondaryButton}
+            >
+              📍 Sélectionner le site
+            </Button>
+          </Space>
         )}
 
         {/* Résultat */}
